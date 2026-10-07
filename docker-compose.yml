@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      target: app
+    environment:
+      # четыре слэша — абсолютный путь внутри контейнера
+      DATABASE_URL: sqlite:////data/kvitto.db
+    ports:
+      - "8000:8000"
+    volumes:
+      # файл базы в volume, чтобы данные переживали пересоздание контейнера
+      - data:/data
+
+  tests:
+    build:
+      context: .
+      target: tests
+    # профиль: при обычном `docker compose up` сервис не стартует,
+    # запускается явно — `docker compose run --rm --build tests`
+    profiles: ["tests"]
+
+volumes:
+  data:
